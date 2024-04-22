@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Full Name Rotation is a web system project created for the midterm exam of the Web System subject. The purpose of this project is to allow users to rotate their full name in various directions.">
+  <meta name="keywords" content="Jhon Keneth Ryan B. Namias, Jhon Keneth Namias, PP Namias onepage, PP Namias developer, PP Namias resume, cv, PP Namias personal,PP Namias portfolio, PP Namias personal resume, PP Namias clean, PP-Namias, PP_Namias, Full Name Rotation">
+  <meta name="author" content="PP-Namias">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:url" content="https://pp-namias.github.io/Full-Name-Rotation/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="PP Namias | Full Name Rotation"/> 
+  <meta property="og:image" content="https://pp-namias.github.io/Full-Name-Rotation/img/screenshot.jpeg"/>
+  <meta property="og:image:alt" content="PP Namias | Full Name Rotation">
+  <meta property="og:description" content="Full Name Rotation - is a web system project created for the midterm exam of the Web System subject. The purpose of this project is to allow users to rotate their full name in various directions."/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="pp-namias.github.io">
+  <meta property="twitter:url" content="https://pp-namias.github.io/Full-Name-Rotation/">
+  <meta name="twitter:title" content="PP Namias | Full Name Rotation">
+  <meta name="twitter:description" content="Full Name Rotation - is a web system project created for the midterm exam of the Web System subject. The purpose of this project is to allow users to rotate their full name in various directions.">
+  <meta name="twitter:image" content="https://pp-namias.github.io/Full-Name-Rotation/img/screenshot.jpeg">
+
+  <title>PP Namias | Full Name Rotation</title>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./img/pp namias.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lexend+Deca&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+  <div class="main-container">
+    <div class="my-image">
+    </div>
+    <div class="hero-container">
+      <div class="midterm-text">
+        <h1><span>Google</span> Authentication</h1>
+        <p>Google Authentication with Firebase, Built using a native tech stack of HTML, CSS, and JavaScript, </p>
+      </div>
+      <div class="login-container">
+        <form id="loginForm">
+          <input type="email" class="input-field" placeholder="Email" required>
+          <input type="password" class="input-field" placeholder="Password" required>
+          <button type="submit" class="btn">Login</button>
+        </form>
+        <button id="googleSignup" class="btn btn-google">Sign up with Google</button>
+      </div>
+      <div class="profile-container" style="display: none;">
+        <img class="profile-img" src="" alt="Profile Image">
+        <div class="profile-name"></div>
+        <button class="logout-btn">Logout</button>
+      </div>
+      <div class="attribution">
+        Activity for Webinar. Design inspired by the previous project "<a href="https://github.com/PP-Namias/Full-Name-Rotation">Full Name Rotation</a>". Coded by <a href="https://github.com/PP-Namias" target="_blank">PP Namias</a>.
+      </div>
+    </div>
+  </div>
+
+  <script src="https://kit.fontawesome.com/1ee8f271b9.js"></script>
+  <script src="/js/script.js" defer type="module"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-analytics.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+        apiKey: "AIzaSyCbhLGrB7U9k3f24W0NlF56Z90PIhDfQp4",
+        authDomain: "login-namias.firebaseapp.com",
+        projectId: "login-namias",
+        storageBucket: "login-namias.appspot.com",
+        messagingSenderId: "405430758466",
+        appId: "1:405430758466:web:b8c65dfa737b10917fd1db",
+        measurementId: "G-6T11QKXHKS"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    const loginContainer = document.querySelector('.login-container');
+    const profileContainer = document.querySelector('.profile-container');
+    const profileImg = document.querySelector('.profile-img');
+    const profileName = document.querySelector('.profile-name');
+    const logoutBtn = document.querySelector('.logout-btn');
+    const loginForm = document.getElementById('loginForm');
+    const googleSignup = document.getElementById('googleSignup');
+
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginContainer.style.display = 'none';
+        profileContainer.style.display = 'block';
+        profileImg.src = user.photoURL;
+        profileName.textContent = user.displayName;
+      } else {
+        loginContainer.style.display = 'block';
+        profileContainer.style.display = 'none';
+      }
+    });
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = loginForm['email'].value;
+      const password = loginForm['password'].value;
+    });
+
+    googleSignup.addEventListener('click', () => {
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth();
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+          const user = result.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.error(errorCode, errorMessage);
+        });
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth)
+        .then(() => {
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    });
+  </script>
+</body>
+</html>
